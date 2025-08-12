@@ -9,40 +9,35 @@ pipeline {
     }
 
     stages {
-        stage('checkout') {
+        stage('Checkout') {
             steps {
                 git branch: 'main', credentialsId: 'Git_cred', url: 'https://github.com/Rakshitsen/EKS-Infra.git'
             }
         }
 
-        stage('terraform init') {
-            when {
-                expression { params.Re_init }
-            }
+        stage('Terraform Init') {
+            when { expression { params.Re_init } }
             steps {
                 echo 'Re-initializing Terraform...'
                 sh 'terraform init'
             }
         }
 
-        stage('terraform formatting') {
+        stage('Terraform Formatting') {
             steps {
                 sh 'terraform fmt -recursive'
             }
         }
 
-        stage('terraform validate') {
+        stage('Terraform Validate') {
             steps {
                 sh 'terraform validate'
             }
         }
 
-        // stage('terraform checkov') {
-        //     when {
-        //         expression { params.Checkov }
-        //     }
+        // stage('Terraform Checkov') {
+        //     when { expression { params.Checkov } }
         //     steps {
-        //         // The multiline script was not properly closed with '''
         //         sh '''
         //         python3 -m venv venv
         //         source venv/bin/activate
@@ -53,27 +48,29 @@ pipeline {
         //     }
         // }
 
-        stage('terraform plan') {
-            withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'Aws_cred', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
-                steps {
-                sh 'terraform plan -out=tfplan'
-            }
-}
-}
-
-        stage('terraform apply') {
-            when {
-                expression { params.Apply }
-            }
+        stage('Terraform Plan') {
             steps {
-                sh 'terraform apply --auto-approve tfplan'
+                withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', 
+                                     credentialsId: 'Aws_cred', 
+                                     secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                    sh 'terraform plan -out=tfplan'
+                }
             }
         }
 
-        stage('terraform destroy') {
-            when {
-                expression { params.Destroy }
+        stage('Terraform Apply') {
+            when { expression { params.Apply } }
+            steps {
+                withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', 
+                                     credentialsId: 'Aws_cred', 
+                                     secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                      sh 'terraform apply --auto-approve tfplan'
+                }
             }
+        }
+
+        stage('Terraform Destroy') {
+            when { expression { params.Destroy } }
             steps {
                 sh 'terraform destroy --auto-approve'
             }
