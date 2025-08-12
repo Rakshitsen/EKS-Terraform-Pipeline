@@ -4,7 +4,8 @@ pipeline {
     parameters {
         booleanParam(name: 'Re_init', defaultValue: false, description: 'Run terraform init if new module/provider added')
         booleanParam(name: 'Destroy', defaultValue: false, description: 'Run terraform destroy to clean up resources')
-        booleanParam(name: 'Checkov', defaultValue: false, description: 'Run Checkov to scan for security issues')
+        booleanParam(name: 'Apply', defaultValue: false, description: 'Run terraform apply to create/update resources')
+        // booleanParam(name: 'Checkov', defaultValue: false, description: 'Run Checkov to scan for security issues')
     }
 
     stages {
@@ -36,34 +37,36 @@ pipeline {
             }
         }
 
-        stage('terraform checkov') {
-            when {
-                expression { params.Checkov }
-            }
+        // stage('terraform checkov') {
+        //     when {
+        //         expression { params.Checkov }
+        //     }
+        //     steps {
+        //         // The multiline script was not properly closed with '''
+        //         sh '''
+        //         python3 -m venv venv
+        //         source venv/bin/activate
+        //         pip install --upgrade pip
+        //         pip install checkov
+        //         checkov -d . --framework terraform --quiet
+        //         '''
+        //     }
+        // }
+
+        stage('terraform plan') {
             steps {
-                // The multiline script was not properly closed with '''
-                sh '''
-                python3 -m venv venv
-                source venv/bin/activate
-                pip install --upgrade pip
-                pip install checkov
-                checkov -d . --framework terraform --quiet
-                '''
+                sh 'terraform plan -out=tfplan'
             }
         }
 
-        // It's a good practice to include plan and apply stages
-        // stage('terraform plan') {
-        //     steps {
-        //         sh 'terraform plan -out=tfplan'
-        //     }
-        // }
-
-        // stage('terraform apply') {
-        //     steps {
-        //         sh 'terraform apply -auto-approve tfplan'
-        //     }
-        // }
+        stage('terraform apply') {
+            when {
+                expression { params.Apply }
+            }
+            steps {
+                sh 'terraform apply --auto-approve tfplan'
+            }
+        }
 
         stage('terraform destroy') {
             when {
