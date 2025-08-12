@@ -5,7 +5,6 @@ pipeline {
         booleanParam(name: 'Re_init', defaultValue: false, description: 'Run terraform init if new module/provider added')
         booleanParam(name: 'Destroy', defaultValue: false, description: 'Run terraform destroy to clean up resources')
         booleanParam(name: 'Apply', defaultValue: false, description: 'Run terraform apply to create/update resources')
-        // booleanParam(name: 'Checkov', defaultValue: false, description: 'Run Checkov to scan for security issues')
     }
 
     stages {
@@ -35,23 +34,10 @@ pipeline {
             }
         }
 
-        // stage('Terraform Checkov') {
-        //     when { expression { params.Checkov } }
-        //     steps {
-        //         sh '''
-        //         python3 -m venv venv
-        //         source venv/bin/activate
-        //         pip install --upgrade pip
-        //         pip install checkov
-        //         checkov -d . --framework terraform --quiet
-        //         '''
-        //     }
-        // }
-
         stage('Terraform Plan') {
             steps {
-                withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', 
-                                     credentialsId: 'Aws_cred', 
+                withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                                     credentialsId: 'Aws_cred',
                                      secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
                     sh 'terraform plan -out=tfplan'
                 }
@@ -61,10 +47,10 @@ pipeline {
         stage('Terraform Apply') {
             when { expression { params.Apply } }
             steps {
-                withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', 
-                                     credentialsId: 'Aws_cred', 
+                withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                                     credentialsId: 'Aws_cred',
                                      secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
-                      sh 'terraform apply --auto-approve tfplan'
+                    sh 'terraform apply --auto-approve tfplan'
                 }
             }
         }
@@ -72,7 +58,11 @@ pipeline {
         stage('Terraform Destroy') {
             when { expression { params.Destroy } }
             steps {
-                sh 'terraform destroy --auto-approve'
+                withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                                     credentialsId: 'Aws_cred',
+                                     secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                    sh 'terraform destroy --auto-approve'
+                }
             }
         }
     }
