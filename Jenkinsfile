@@ -61,7 +61,7 @@ pipeline {
                 withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID',
                                      credentialsId: 'Aws_cred',
                                      secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
-                    sh 'terraform destroy --auto-approve'
+                    sh 'terraform destroy tfplan --auto-approve'
                 }
             }
         }
