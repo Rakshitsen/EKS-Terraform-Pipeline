@@ -11,6 +11,9 @@ pipeline{
             }
         }
         stage('terraform init'){
+            when {
+                expression { params.Re-init }
+            }
             steps{
                 sh 'terraform init'
             }
