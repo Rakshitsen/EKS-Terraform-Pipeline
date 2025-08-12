@@ -5,6 +5,11 @@ pipeline{
         booleanParam(name: 'Re-init', defaultValue: false, description: 'want to run terraform init if any new module add or new provider addded')
     }
     stages{
+        stage('checkout'){
+            steps{
+                git branch: 'main', credentialsId: 'Git_cred', url: 'https://github.com/Rakshitsen/EKS-Infra.git'
+            }
+        }
         stage('terraform init'){
             steps{
                 sh 'terraform init'
