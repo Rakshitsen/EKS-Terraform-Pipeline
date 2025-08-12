@@ -10,7 +10,7 @@ terraform {
     backend "s3" {
     bucket         = "mern-terra-bucket-2025"
     key            = "terraform.tfstate"
-    region         =  var.region
+    region         =  "us-west-2"
     dynamodb_table = "terraform-lock-table"
     
   }
