@@ -1,0 +1,25 @@
+pipeline{
+    agent any
+    
+    parameters {
+        booleanParam(name: 'Re-init', defaultValue: false, description: 'want to run terraform init if any new module add or new provider addded')
+    }
+    stages{
+        stage('terraform init'){
+            steps{
+                sh 'terraform init'
+            }
+
+        }
+        stage('terraform formatting'){
+            steps{
+                sh 'terraform fmt -recursive'
+            }
+        }
+        stage('terraform validate'){
+            steps{
+                sh 'terraform validate'
+            }
+        }
+    }
+}
