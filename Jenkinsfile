@@ -17,8 +17,11 @@ pipeline {
         stage('Terraform Init') {
             when { expression { params.Re_init } }
             steps {
-                echo 'Re-initializing Terraform...'
-                sh 'terraform init'
+                withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                                     credentialsId: 'Aws_cred',
+                                     secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                    sh 'terraform init'
+                }
             }
         }
 
