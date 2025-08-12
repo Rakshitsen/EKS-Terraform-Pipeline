@@ -33,5 +33,15 @@ pipeline {
                 sh 'terraform validate'
             }
         }
+        // stage('terraform plan') {
+        //     steps {
+        //         sh 'terraform plan -out=tfplan'
+        //     }
+        // }
+        // stage('terraform apply') {
+        //     steps {
+        //         sh 'terraform apply -auto-approve tfplan'
+        //     }
+        // }
     }
 }
