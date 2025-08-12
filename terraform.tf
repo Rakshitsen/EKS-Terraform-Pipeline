@@ -7,6 +7,13 @@ terraform {
       version = "~> 5.0" # AWS provider constraint
     }
   }
+    backend "s3" {
+    bucket         = "mern-terra-bucket-2025"
+    key            = "terraform.tfstate"
+    region         =  var.region
+    dynamodb_table = "terraform-lock-table"
+    
+  }
 }
 
 provider "aws" {
