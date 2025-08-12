@@ -54,10 +54,12 @@ pipeline {
         // }
 
         stage('terraform plan') {
-            steps {
+            withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'Aws_cred', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                steps {
                 sh 'terraform plan -out=tfplan'
             }
-        }
+}
+}
 
         stage('terraform apply') {
             when {
