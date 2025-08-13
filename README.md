@@ -176,7 +176,7 @@ After successful creation, Terraform will output the following details:
 This project uses DynamoDB for Terraform state locking to ensure that only one process can modify the infrastructure at a time.
 If two Terraform operations run simultaneously (e.g., one from Jenkins and one from GitHub Actions), one will fail with a lock error until the other finishes.
 
-![alt text](<Screenshot from 2025-08-13 11-01-15.png>)
+images/Screenshot from 2025-08-13 11-01-15.png
 
 Example Lock Error (From Jenkins)
 Error message: operation error DynamoDB: PutItem, https response error
@@ -185,7 +185,7 @@ StatusCode: 400, RequestID: <request-id>, ConditionalCheckFailedException: The c
 Terraform acquires a state lock to protect the state from being written by multiple users at the same time.
 Please resolve the issue above and try again.
 
-![alt text](<Screenshot from 2025-08-13 11-01-59.png>)
+images/Screenshot from 2025-08-13 11-01-59.png
 ## 📜 License
 
 This project is licensed under the MIT License.
