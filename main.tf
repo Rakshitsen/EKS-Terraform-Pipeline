@@ -11,7 +11,7 @@ module "eks"{
   source = "./modules/eks"
   vpc_id = var.vpc_cidr
   cluster_name = var.cluster_name
-  cluster_version = var.cluster_name
+  cluster_version = var.cluster_version
   subnet_ids = var.private_subnet_cidrs
   node_groups = var.node_groups
 }
