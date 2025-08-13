@@ -7,11 +7,13 @@ module "vpc" {
   public_subnet_cidrs  = var.public_subnet_cidrs
 }
 
-module "eks"{
+
+module "eks" {
   source = "./modules/eks"
-  vpc_id = var.vpc_cidr
-  cluster_name = var.cluster_name
+
+  cluster_name    = var.cluster_name
   cluster_version = var.cluster_version
-  subnet_ids = var.private_subnet_cidrs
-  node_groups = var.node_groups
+  vpc_id          = module.vpc.vpc_id
+  subnet_ids      = module.vpc.private_subnet_ids
+  node_groups     = var.node_groups
 }
