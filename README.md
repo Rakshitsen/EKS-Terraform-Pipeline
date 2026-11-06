@@ -1,7 +1,4 @@
 -----
-
-## title: "EKS Infrastructure with Terraform, Jenkins, and GitHub Actions"
-
 # EKS Infrastructure with Terraform, Jenkins, and GitHub Actions
 
 ## 📌 Overview
